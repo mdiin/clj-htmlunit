@@ -1,17 +1,9 @@
 # clj-htmlunit
 
-FIXME: write description
-
-## Usage
-
-FIXME: write
-
-## Installation
-
-FIXME: write
+A Clojure wrapper around HtmlUnit.
 
 ## License
 
-Copyright (C) 2010 FIXME
+Copyright (C) 2012 Matthias Diehn Ingesman
 
 Distributed under the Eclipse Public License, the same as Clojure.
