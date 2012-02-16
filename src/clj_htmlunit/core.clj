@@ -1,8 +1,8 @@
 (ns clj-htmlunit.core
   (:import (com.gargoylesoftware.htmlunit
-            SgmlPage WebClient BrowserVersion)
+            WebClient BrowserVersion)
            (com.gargoylesoftware.htmlunit.html
-            HtmlElement)
+            DomNode HtmlElement)
            (com.gargoylesoftware.htmlunit.util
             FalsifyingWebConnection)))
 
@@ -48,7 +48,7 @@
     "ID"))
 
 (extend-protocol XPathable
-  SgmlPage
+  DomNode
 
   (descendants-by-xpath [node xpath]
     (.getByXPath node xpath))
