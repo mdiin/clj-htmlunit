@@ -2,7 +2,9 @@
   (:import (com.gargoylesoftware.htmlunit
             SgmlPage WebClient BrowserVersion)
            (com.gargoylesoftware.htmlunit.html
-            HtmlElement)))
+            HtmlElement)
+           (com.gargoylesoftware.htmlunit.util
+            FalsifyingWebConnection)))
 
 (defn make-client
   "[]
@@ -75,3 +77,25 @@
 	items (map #(.item attrs %) (range 0 length))
 	hash (reduce #(merge %1 {(keyword (.getName %2)) (.getValue %2)}) {} items)]
     hash))
+
+;; TODO: Find a way to make these return a fresh client object.
+(defn allow-all
+  "Modifies(!) the given client to process all requests
+  normally. Returns an instance of an anonymous class."
+  [client]
+  (proxy [FalsifyingWebConnection] [client]
+    (getResponse [request]
+      (let [res (proxy-super getResponse request)]
+        res))))
+
+(defn block-match
+  "Modifies(!) the given client to ignore all requests that contain
+  match in their URL. Returns an instance of an anonymous class."
+  [client match]
+  (proxy [FalsifyingWebConnection] [client]
+    (getResponse [request]
+      (let [res (proxy-super getResponse request)
+            req-url (.. res getWebRequest getUrl toString)]
+        (if (.contains req-url match)
+          (proxy-super createWebResponse (.getWebRequest res) "" "application/javascript" 200 "Ok")
+          res)))))
